@@ -1,35 +1,90 @@
-import React from 'react'
+import React, {Component} from 'react'
 
 import { StyleSheet, css } from 'aphrodite'
 import data from '../data'
 
+import ReactSortable from 'react-sortablejs'
+
 // This is a static page. It uses an array to hold data about the resources
 // and maintain DRY
-const Home = (props) => (
-  <div>
 
-    <h2 className={css(styles.header)}>About</h2>
-    <p className={css(styles.lead)}>
-      This is an example react application (master-detail feed) with isomorphic rendering, async react-router routes, async redux reducers, async data fetching, and code-splitting.
-    </p>
-    <h2 className={css(styles.header)}>Motivation</h2>
-    <p className={css(styles.lead)}>
-      The file size of isomorphic React apps can quickly get out of hand. Many isomorphic starter kits look awesome to begin with but yield a several megabyte javascript
-      file for the client to download. This project aims to demonstrate some possible solutions.
-    </p>
-    <h2 className={css(styles.header)}>Under the Hood</h2>
-    <ul className={css(styles.list)}>
-      {data.map((item, i) => (
-        <li key={i}>
-          <h3><a className={css(styles.link)} href={item.link} target='_blank'>{item.resource}</a></h3>
-          <p className={css(styles.body)}>{item.description}</p>
-        </li>
-       ))}
-    </ul>
-  </div>
-)
+class Home extends Component {
+  state = {
+    winterClothing: ['Touque', 'Mittens', 'Scarf'],
+    footwear:['Boots', 'Flipy-flopies', 'Clogs']
+  }
+
+  render() {
+    return (
+      <div>
+        <div>
+          <ReactSortable
+            options={{ group: 'shared' }}
+            className='container'
+            onChange={(order, sortable, evt) => {
+              console.log('ose', order, sortable, evt)
+              this.setState({ winterClothing: order})
+            }}
+          >
+            {
+              this.state.winterClothing.map(
+                item => <div key={Math.random()} data-id={item}>{item}</div>
+              )
+            }
+          </ReactSortable>
+        </div>
+
+        <br/>
+        <div>----------------</div>
+        <br/>
+
+        <div>
+          <ReactSortable
+            options={{ group: 'shared' }}
+            className='container'
+            onChange={(order, sortable, evt) => {
+              this.setState({ footwear: order})
+            }}
+          >
+            {
+              this.state.footwear.map(
+                item => <div key={Math.random()} data-id={item}>{item}</div>
+              )
+            }
+          </ReactSortable>
+        </div>
+      </div>
+    )
+  }
+}
+
+class Home2 extends React.Component {
+    state = {
+        items: ['Apple', 'Banana', 'Cherry', 'Guava', 'Peach', 'Strawberry']
+    };
+
+    render() {
+        const items = this.state.items.map((val, key) => (<li key={key} data-id={val}>{val}</li>));
+
+        return (
+            <div>
+                <ReactSortable
+                    tag="ul" // Defaults to "div"
+                    onChange={(order, sortable, evt) => {
+                        this.setState({ items: order });
+                    }}
+                >
+                    {items}
+                </ReactSortable>
+            </div>
+        );
+    }
+}
 
 const styles = StyleSheet.create({
+  container: {
+    display: 'flex'
+  },
   header: {
     fontSize: 28,
     lineHeight: '1.2',
